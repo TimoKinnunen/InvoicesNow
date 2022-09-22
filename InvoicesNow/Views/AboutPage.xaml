@@ -1,0 +1,137 @@
+﻿<Page
+    x:Class="InvoicesNow.Views.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="0,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="0,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="12,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="24,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="24,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="PageTitleTextBlock" 
+                   Grid.Row="0" 
+                   Style="{StaticResource TitleTextBlockStyle}" 
+                   Text="About"/>
+
+        <ScrollViewer x:Name="AppBarButtonScrollViewer"
+                      Grid.Row="1">
+            <StackPanel x:Name="AppBarButtonStackPanel"
+                        Orientation="Horizontal">
+                <AppBarButton x:Name="HomeAppBarButton"
+                              Tapped="HomeAppBarButton_Tapped"
+                              Label="Home"
+                              ToolTipService.ToolTip="Go to Home page"
+                              Icon="Home"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer x:Name="PageContentScrollViewer"
+                      Grid.Row="2">
+            <StackPanel x:Name="PageContentStackPanel">
+
+                <!--page content goes here-->
+
+                <Grid x:Name="VersionGrid">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.RowSpan="3"
+                            Grid.Column="1" 
+                            BorderBrush="DimGray" 
+                            BorderThickness="1"
+                            IsHitTestVisible="False"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Margin="0,0,40,0">
+                        <Border.Background>
+                            <SolidColorBrush Color="{ThemeResource SystemAccentColor}" />
+                        </Border.Background>
+                        <Image x:Name="InvoicesNowImage"
+                               Stretch="None" />
+                    </Border>
+                    <TextBlock x:Name="AppDisplayNameTextBlock" 
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Margin="0,12,0,0" 
+                               TextWrapping="Wrap"/>
+                    <TextBlock x:Name="PublisherTextBlock"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               Margin="0,12,0,0" 
+                               TextWrapping="Wrap"/>
+                    <TextBlock x:Name="VersionTextBlock" 
+                               Grid.Row="2"
+                               Grid.Column="0"
+                               TextWrapping="Wrap"/>
+
+                </Grid>
+
+                <HyperlinkButton Content="InvoicesNow support website" 
+                                 Margin="0,12,0,0"
+                                 NavigateUri="http://InvoicesNow.blogspot.com/"
+                                 Style="{StaticResource TextBlockButtonStyle}"/>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}">Invoice</TextBlock>
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                    Create invoices. Localize your invoice. Print invoice to paper or .pdf-file. Invoice on paper is history. But it was worth it.
+                    If you keep backup of invoices, sellers, buyers, items and translations as .json-files you can restore them and you are good to go again!
+                    You can delete this app from your device and install it again from Windows App Store (Microsoft Store).
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}">History behind this app</TextBlock>
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                    Me and my friends play floor-ball and some of them needed an invoice to send to employer. The employer in Sweden pays for leisure activity to keep employees fit for work.
+                    There were no acceptable invoices to find on web. I made my own! Seller was one of us and payer was one of us.
+                    Localization was a big challenge. How can people use this app in the whole world? The solution was that texts(paragraphs) on invoice are translated by the end-user!
+                </TextBlock>
+                
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}">About this app</TextBlock>
+                <TextBlock TextWrapping="Wrap" Margin="0,0,0,8">
+                    You need to know English and be able to translate 25 paragraphs to some specific language. Use for translations Microsoft Bing Translator or some other of your choice.
+                </TextBlock>
+                <!--page content goes here-->
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

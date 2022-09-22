@@ -1,0 +1,615 @@
+﻿<Page
+    x:Class="InvoicesNow.Printing.Views.PrintInvoicePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:InvoicesNow.Converters"
+    xmlns:printviewmodels="using:InvoicesNow.Printing.ViewModels"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
+
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleGrid.Margin" Value="0,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="0,0,4,4"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleGrid.Margin" Value="12,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="24,0,4,4"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="24,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="PageTitleGrid"
+              Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="PageTitleTextBlock"
+                       Grid.Column="0"
+                       Style="{StaticResource TitleTextBlockStyle}" 
+                       VerticalAlignment="Bottom"
+                       Text="Print invoice"
+                       Margin="0,0,24,0"/>
+            <TextBlock x:Name="PageTitleCultureNameTextBlock"
+                       Grid.Column="1"
+                       Style="{StaticResource TitleTextBlockStyle}" 
+                       VerticalAlignment="Bottom"
+                       Margin="0,0,0,4"
+                       FontSize="10"
+                       Text="{x:Bind PageTitleCultureName}"/>
+        </Grid>
+
+        <Canvas x:Name="PrintCanvas" Opacity="0"/>
+        <Canvas x:Name="MeasurePrintCanvas" Opacity="0"/>
+
+        <ScrollViewer x:Name="AppBarButtonScrollViewer"
+                      Grid.Row="1">
+            <StackPanel x:Name="AppBarButtonStackPanel"
+                        Orientation="Horizontal">
+                <AppBarButton x:Name="BackAppBarButton"
+                              Label="Back"
+                              ToolTipService.ToolTip="Go back"
+                              Icon="Back"
+                              Tapped="BackAppBarButton_Tapped"/>
+                <AppBarButton x:Name="HomeAppBarButton"
+                              Label="Home"
+                              ToolTipService.ToolTip="Go to Home page"
+                              Icon="Home"
+                              Tapped="HomeAppBarButton_Tapped"/>
+                <AppBarButton x:Name="EmailAppBarButton"
+                              Tapped="EmailAppBarButton_Tapped"
+                              Label="E-mail"
+                              ToolTipService.ToolTip="E-mail invoice"
+                              Icon="Mail"
+                              IsEnabled="False"/>
+                <AppBarButton x:Name="EditAppBarButton"
+                              Tapped="EditAppBarButton_Tapped"
+                              Label="Edit"
+                              ToolTipService.ToolTip="Edit invoice"
+                              Icon="Edit"/>
+                <AppBarButton x:Name="PrintInvoiceAppBarButton"
+                              Tapped="PrintInvoiceAppBarButton_Tapped"
+                              Label="Print"
+                              ToolTipService.ToolTip="Print invoice"
+                              Icon="Print"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--page content goes here-->
+        <ScrollViewer x:Name="PageContentScrollViewer"
+                      Grid.Row="2">
+
+            <StackPanel x:Name="PrintInvoiceStackPanel" 
+                        Margin="0,4,4,4">
+
+                <StackPanel.Resources>
+                    <local:CurrentCultureConverter x:Key="AllPurposeConverter" />
+                </StackPanel.Resources>
+
+                <Grid x:Name="HeaderGrid"
+                      Background="{ThemeResource SystemBaseLowColor}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,0,24">
+
+                        <Image x:Name="SellerLogotypeImage"
+                               Visibility="Collapsed"
+                               MaxWidth="400" 
+                               HorizontalAlignment="Left"
+                               Source="/Assets/PlaceholderLogotype.png"
+                               Stretch="None"
+                               Margin="0,0,4,0"/>
+
+                        <TextBlock x:Name="SellerNameSubTitleTextBlock" 
+                                   Text="{Binding Path=SellerName}"
+                                   TextWrapping="Wrap"
+                                   Style="{StaticResource TitleTextBlockStyle}"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                    
+                    <TextBlock x:Name="TranslateInvoiceTextBlock"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               Text="{Binding Path=TranslateInvoice}"
+                               VerticalAlignment="Top"
+                               HorizontalAlignment="Right"
+                               TextWrapping="Wrap"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock x:Name="BuyerNameSubTitleTextBlock"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               Text="{Binding Path=BuyerName}"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="TranslateInvoiceNumberTextBlock" 
+                               Grid.Row="2"
+                               Grid.Column="0"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=TranslateInvoiceNumber}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock x:Name="TranslateInvoiceDateTextBlock"
+                               Grid.Row="2"
+                               Grid.Column="1"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=TranslateInvoiceDate}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="0"
+                               Text="{Binding Path=InvoiceNumber}"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock Grid.Row="3"
+                               Grid.Column="1"
+                               Text="{Binding Path=InvoiceDate, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:d\}}"
+                               TextWrapping="Wrap"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="InvoiceInfoToBuyerTextBlock"
+                               Grid.Row="4"
+                               Grid.Column="0"
+                               Text="{Binding Path=InvoiceInfoToBuyer}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="TranslateDueDateTextBlock"
+                               Grid.Row="5"
+                               Grid.Column="0"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=TranslateDueDate}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock x:Name="TranslateAmountToPayTextBlock"
+                               Grid.Row="5"
+                               Grid.Column="1"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=TranslateAmountToPay}"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock Grid.Row="6"
+                               Grid.Column="0"
+                               Text="{Binding Path=NetPaymentDueDate, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:D\}}"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock Grid.Row="6"
+                               Grid.Column="1"
+                               Text="{Binding Path=TotalIncludingTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Style="{StaticResource TitleTextBlockStyle}"
+                               Margin="0,0,4,0"/>
+                </Grid>
+
+                <Grid x:Name="SellerAccountGrid"
+                      Background="{ThemeResource SystemBaseLowColor}">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock x:Name="TranslatePaymentToAccountTextBlock"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               Text="{Binding Path=TranslatePaymentToAccount}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="TranslateSWIFTBICTextBlock"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               Text="{Binding Path=TranslateSWIFTBIC}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="TranslateIBANTextBlock"
+                               Grid.Row="0"
+                               Grid.Column="2"
+                               Text="{Binding Path=TranslateIBAN}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="SellerAccountTextBlock"
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               Text="{Binding Path=SellerAccount}"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="SellerSWIFTBICTextBlock"
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               Text="{Binding Path=SellerSWIFTBIC}"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="SellerIBANTextBlock"
+                               Grid.Row="1"
+                               Grid.Column="2"
+                               Text="{Binding Path=SellerIBAN}"
+                               FontWeight="Bold"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+                </Grid>
+
+                <Grid x:Name="HeaderMoneyGrid"
+                      Background="{ThemeResource SystemBaseLowColor}"
+                      Margin="0,0,0,8">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock x:Name="TranslateTotalIncludingTaxTextBlock"
+                               Grid.Row="0"
+                               Grid.Column="0"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=TranslateTotalIncludingTax}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock x:Name="TranslateTotalExcludingTaxTextBlock"
+                               Grid.Row="0"
+                               Grid.Column="1"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=TranslateTotalExcludingTax}"
+                               Margin="0,0,4,0"/>
+                    <TextBlock x:Name="TranslateTotalTaxTextBlock"
+                               Grid.Row="0"
+                               Grid.Column="2"
+                               TextWrapping="Wrap"
+                               Text="{Binding Path=TranslateTotalTax}"
+                               Margin="0,0,4,0"/>
+
+                    <TextBlock x:Name="TotalIncludingTaxTextBlock" 
+                               Grid.Row="1"
+                               Grid.Column="0"
+                               Text="{Binding Path=TotalIncludingTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+                    <TextBlock x:Name="TotalExcludingTaxTextBlock" 
+                               Grid.Row="1"
+                               Grid.Column="1"
+                               Text="{Binding Path=TotalExcludingTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+                    <TextBlock x:Name="TotalTaxTextBlock" 
+                               Grid.Row="1"
+                               Grid.Column="2"
+                               Text="{Binding Path=TotalTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                               TextWrapping="Wrap"
+                               Margin="0,0,4,0"/>
+                </Grid>
+
+                <Frame BorderBrush="{ThemeResource SystemBaseLowColor}"
+                       BorderThickness="0,4,0,4"
+                       Background="{ThemeResource SystemBaseLowColor}"
+                       Margin="0,8,0,8">
+                </Frame>
+
+                <Grid x:Name="BuyerGrid">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel x:Name="BuyerNameStackPanel" 
+                                Grid.Row="0"
+                                Grid.Column="0">
+                        <TextBlock x:Name="TranslateBuyerNameTextBlock"
+                                   Text="{Binding Path=TranslateBuyerName}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Path=BuyerName}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                    <StackPanel x:Name="BuyerEmailStackPanel" 
+                                Grid.Row="0"
+                                Grid.Column="1">
+                        <TextBlock x:Name="TranslateBuyerEmailAddressTextBlock"
+                                   Text="{Binding Path=TranslateBuyerEmailAddress}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Path=BuyerEmail}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                    <StackPanel x:Name="BuyerAddressStackPanel" 
+                                Grid.Row="1"
+                                Grid.Column="0">
+                        <TextBlock x:Name="TranslateBuyerAddressTextBlock"
+                                   Text="{Binding Path=TranslateBuyerAddress}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Path=BuyerAddress}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                    <StackPanel x:Name="BuyerPhonenumberStackPanel" 
+                                Grid.Row="1"
+                                Grid.Column="1">
+                        <TextBlock x:Name="TranslateBuyerPhonenumberTextBlock"
+                                   Text="{Binding Path=TranslateBuyerPhonenumber}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Path=BuyerPhonenumber}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <Frame BorderBrush="{ThemeResource SystemBaseLowColor}"
+                       BorderThickness="0,4,0,4"
+                       Background="{ThemeResource SystemBaseLowColor}"
+                       Margin="0,8,0,8">
+                </Frame>
+
+                <Grid x:Name="SellerGrid">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel x:Name="SellerNameStackPanel" 
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                Margin="0,0,4,0">
+                        <TextBlock x:Name="TranslateSellerNameTextBlock"
+                                   Text="{Binding Path=TranslateSellerName}"
+                                   TextWrapping="Wrap"/>
+                        <TextBlock Text="{Binding Path=SellerName}"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                    <StackPanel x:Name="SellerEmailStackPanel" 
+                                Grid.Row="0"
+                                Grid.Column="1">
+                        <TextBlock x:Name="TranslateSellerEmailAddressTextBlock"
+                                   Text="{Binding Path=TranslateSellerEmailAddress}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Path=SellerEmail}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                    <StackPanel x:Name="SellerAddressStackPanel" 
+                                Grid.Row="1"
+                                Grid.Column="0">
+                        <TextBlock x:Name="TranslateSellerAddressTextBlock"
+                                   Text="{Binding Path=TranslateSellerAddress}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Path=SellerAddress}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                    <StackPanel x:Name="SellerPhonenumberStackPanel" 
+                                Grid.Row="1"
+                                Grid.Column="1">
+                        <TextBlock x:Name="TranslateSellerPhonenumberTextBlock"
+                                   Text="{Binding Path=TranslateSellerPhonenumber}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock Text="{Binding Path=SellerPhonenumber}"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <Frame BorderBrush="{ThemeResource SystemBaseLowColor}"
+                       BorderThickness="0,4,0,4"
+                       Background="{ThemeResource SystemBaseLowColor}"
+                       Margin="0,8,0,8">
+                </Frame>
+
+                <ListView x:Name="PrintInvoiceItemListView"
+                          DataContext="{Binding}"
+                          SelectionMode="None"
+                          Margin="0,4,0,4">
+
+                    <ListView.HeaderTemplate>
+                        <DataTemplate x:Name="TableHeaderDataTemplate" x:DataType="printviewmodels:PrintInvoiceItemHeaderViewModel">
+                            <Grid x:Name="TableHeaderDataGrid" Padding="0,12,12,12" Background="{ThemeResource SystemBaseLowColor}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock x:Name="TableHeaderInvoiceItemtNameTextBlock" 
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Left"
+                                           TextAlignment="Left"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="0" 
+                                           Text="{x:Bind TranslateHeaderName}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock x:Name="TableHeaderQuantityTextBlock" 
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           TextAlignment="Right"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="1" 
+                                           Text="{x:Bind TranslateHeaderQuantity}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock x:Name="TableHeaderTaxTextBlock" 
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           TextAlignment="Right"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="2" 
+                                           Text="{x:Bind TranslateHeaderTax}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock x:Name="TableHeaderPriceTextBlock" 
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           TextAlignment="Right"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="3" 
+                                           Text="{x:Bind TranslateHeaderPrice}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.HeaderTemplate>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:Name="TableDataTemplate" x:DataType="printviewmodels:PrintInvoiceItemViewModel">
+                            <Grid x:Name="TableDataGrid" Height="Auto" AutomationProperties.Name="{x:Bind PrintInvoiceItemViewModelId}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="5*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Left"
+                                           TextAlignment="Left"
+                                           Margin="0,0,4,0"
+                                           Text="{x:Bind Name}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Grid.Column="1" 
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           TextAlignment="Right"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,4,0"
+                                           Text="{Binding Path=Quantity, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:n\2\}}"/>
+                                <TextBlock Grid.Column="2"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           TextAlignment="Right"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,4,0"
+                                           Text="{Binding Path=Tax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:p\2\}}"/>
+                                <TextBlock Grid.Column="3" 
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           TextWrapping="Wrap"
+                                           Text="{Binding Path=Price, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+
+                <Frame BorderBrush="{ThemeResource SystemBaseLowColor}"
+                       BorderThickness="0,4,0,4"
+                       Background="{ThemeResource SystemBaseLowColor}"
+                       Margin="0,8,0,8">
+                </Frame>
+
+                <StackPanel x:Name="RecordDateStackPanel"
+                            Orientation="Horizontal">
+                    <StackPanel>
+                        <TextBlock Text="Created"
+                                   FontSize="12"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock x:Name="CreatedAtDateTimeTextBlock" 
+                                   Text="{Binding Path=CreatedAtDateTime}"
+                                   IsTextSelectionEnabled="True"
+                                   FontSize="12"
+                                   Margin="0,0,24,0"/>
+                    </StackPanel>
+                    <StackPanel>
+                        <TextBlock Text="Updated"
+                                   FontSize="12"
+                                   Margin="0,0,4,0"/>
+                        <TextBlock x:Name="UpdatedAtDateTimeTextBlock" 
+                                   Text="{Binding Path=UpdatedAtDateTime}"
+                                   IsTextSelectionEnabled="True"
+                                   FontSize="12"
+                                   Margin="0,0,4,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+            </StackPanel>
+        </ScrollViewer>
+        <!--page content goes here-->
+
+    </Grid>
+</Page>

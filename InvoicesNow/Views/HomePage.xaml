@@ -1,0 +1,92 @@
+﻿<Page
+    x:Class="InvoicesNow.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="0,0,0,0"/>
+                        <Setter Target="PageContentGrid.Margin" Value="0,0,4,4"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="12,0,0,0"/>
+                        <Setter Target="PageContentGrid.Margin" Value="24,0,4,4"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="24,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="PageTitleTextBlock" 
+                   Grid.Row="0" 
+                   Style="{StaticResource TitleTextBlockStyle}" 
+                   Text="Home"/>
+
+        <ScrollViewer x:Name="AppBarButtonScrollViewer"
+                      Grid.Row="1">
+            <StackPanel x:Name="AppBarButtonStackPanel"
+                        Orientation="Horizontal">
+                <AppBarButton x:Name="HomeAppBarButton"
+                              Label="Home"
+                              ToolTipService.ToolTip="You are at Home page"
+                              Icon="Home"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--page content goes here-->
+        <Grid x:Name="PageContentGrid"
+              Grid.Row="2">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="HeaderStackPanel"
+                  Grid.Row="0"
+                  HorizontalAlignment="Stretch"
+                  Margin="0,0,4,0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="The app is in English but invoice can be localized to any language (where currency symbol is present). Go to Translations page." 
+                           Grid.Row="0"
+                           TextWrapping="Wrap"
+                           Margin="0,0,0,4"/>
+
+                <TextBlock x:Name="CurrentCultureTextBlock"
+                           Grid.Row="1"
+                           TextWrapping="Wrap"
+                           Margin="0,4,0,4"/>
+            </Grid>
+        </Grid>
+        <!--page content goes here-->
+
+    </Grid>
+</Page>

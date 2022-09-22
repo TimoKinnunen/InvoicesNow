@@ -1,0 +1,230 @@
+﻿<Page
+    x:Class="InvoicesNow.Views.InstructionsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="0,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="0,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="12,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="24,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="24,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="PageTitleTextBlock" 
+                   Grid.Row="0" 
+                   Style="{StaticResource TitleTextBlockStyle}" 
+                   Text="Instructions"/>
+
+        <ScrollViewer x:Name="AppBarButtonScrollViewer"
+                      Grid.Row="1">
+            <StackPanel x:Name="AppBarButtonStackPanel"
+                        Orientation="Horizontal">
+                <AppBarButton x:Name="HomeAppBarButton"
+                              Tapped="HomeAppBarButton_Tapped"
+                              Label="Home"
+                              ToolTipService.ToolTip="Go to Home page"
+                              Icon="Home"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer x:Name="PageContentScrollViewer"
+                      Grid.Row="2">
+            <StackPanel x:Name="PageContentStackPanel">
+
+                <!--page content goes here-->
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Translate using Microsoft Bing Translator</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Go to 'Translations page'.
+                    Copy given text and paste it to Microsoft Bing Translator. Copy translated text and paste it back in field below.
+                    Press 'Fill' button. Now you have to save in order to persist translations.
+                    You can translate for several languages. Print invoice and see the translation take effect.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Invoice page</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Enter seller and buyer data.
+                    Add new item at bottom of page by entering name, tax and price.
+                    Add this item to items collection. And from there to invoice items collection.
+                    Save invoice.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Invoice date</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Choose a date with DatePicker.
+                    Net payment alternatives are within 1, 5, 15, 30 days.
+                    Your invoice number uses chosen invoice date to calculate it. Also there is a serie to use on 'Settings page'.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Buyer and seller on 'Invoice page'</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    When you enter seller or buyer on 'Invoice page' and save invoice, the seller and buyer are also saved.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Item on 'Invoice page'</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    When you enter an item via 'New item' and add it to items collection it is saved. And item can be deleted from here, too.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Logotype on 'Seller's logotype page'</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Add logotype to invoice. Select a prepared picture of your choice and size as logotype. Scale it up or down to suit. 
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Entering decimal values into fields</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    There is no need to press Enter key anymore! 
+                </TextBlock>
+                
+                
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Go back</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    On any page going back will not save data. Let us assume you have done changes to data and don't want them to persist, simply go back!
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Tax</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Tax is often same as VAT (Value Added Tax).
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Price</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Price on item is excluding tax (netto).
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">IBAN</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    International Bank Account Number (IBAN).
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">SWIFT/BIC</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Society for Worldwide Interbank Financial Telecommunication (SWIFT)/Bank Identifier Code (BIC).
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Print invoice</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Print invoice to your printer or to .pdf-file on disk using 'printer' 'Microsoft Print to PDF'.
+                    Select a printer you have or 'Microsoft Print to PDF'. 'Microsoft Print to PDF' prints invoice to a .pdf-file on disk.
+                    This file can be opened in a web browser for example for viewing.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">E-mail your invoice as .pdf-file</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Send an e-mail to your buyer and attach .pdf-invoice to your e-mail message.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">'Translations page'</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Select a language for this app. You can select any language you have installed on your device. And you can add more languages to Windows 10.
+                    Here you localize 25 paragraphs to selected language. And your invoice reflects it.
+                    You have to translate 25 paragraphs using for example Microsoft Bing Translator first and paste them back.
+                    This app depends on languages installed in your Windows 10 operating system.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Translations</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    When you save translations on 'Translations page' a file is saved to local folder. Even after when you imported translations you have to save once.
+                    The file name is coupled to culture name. And changing language you change culture for this app. Export translations to some folder on your harddisk.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Export and import data</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    On many pages there are possibility to export and import data. Data is saved as .json-file. 
+                    Rule for importing data: If record with same UpdatedDateTime exists in database the record is not imported. But if imported record's UpdatedDateTime is later than corresponding record's UpdatedDateTime in database it is imported.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Database info</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    On this page you see where your database is. You can inspect database data with external tools that understand SQLite. For example 'DB Browser for SQLite'.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Installed languages</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    You see a list of installed languages on 'Translations page'.
+                    You can install more languages to your Windows 10 when you need them for your invoice in specific language.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Currency is only numbers</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    There is no currency converter. When changing language, and currency to another currency, the price remains same and only currency symbol is switched.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Export data</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Make a backup of invoices, buyers, sellers, items and translations to .json-files. Make own folder for them.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Import data</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Import from your backup invoices, buyers, sellers, items and translations.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Export data before removing this app</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Make a backup of invoices, buyers, sellers, items and translations to .json-files before removing this app. You can restore them later.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Export data often</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Make a backup of invoices, buyers, sellers, items and translations to .json-files often. You might lose data for different reasons (computer or hard disk failure).
+                    You can save a backup to removable media via export data!
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">'Settings page'</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Invoice numbers can be set from a serie on 'Settings page' of your choice or an invoice number calculated with invoice's invoice date.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Database</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    SQLite database is created when this app is taken in use first time. If you have a backup of .json-files you can remove this app from your computer and install it again from Microsoft Store.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">Share your translations with friends</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    It may take some effort to get it right with translations. How exact is Microsoft Bing Translator? Share translations with others! Make your .json-file public.
+                </TextBlock>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" IsTextSelectionEnabled="True">E-mail your invoice</TextBlock>
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,0,0,8">
+                    Press 'Print invoice' button to print the invoice. Choose 'printer' 'Microsoft Print to PDF'. Save the file with appropriate name to some folder. Now you have a .pdf-file to attach to your e-mail message.
+                    On page 'Invoices page' press 'E-mail' button. Attach the file and write necessary text to buyer. Send e-mail.
+                </TextBlock>
+
+                <TextBlock TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,8,0,24">
+                    Document updated 20210323.
+                </TextBlock>
+                <!--page content goes here-->
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

@@ -1,0 +1,1103 @@
+﻿<Page
+    x:Class="InvoicesNow.Views.InvoicePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:InvoicesNow.Converters"
+    xmlns:viewmodels="using:InvoicesNow.ViewModels"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
+
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleGrid.Margin" Value="0,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="0,0,4,4"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleGrid.Margin" Value="12,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="24,0,4,4"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="24,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="PageTitleGrid"
+              Grid.Row="0">
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock x:Name="PageTitleTextBlock"
+                       Grid.Column="0"
+                       Style="{StaticResource TitleTextBlockStyle}" 
+                       VerticalAlignment="Bottom"
+                       Text="New invoice"
+                       Margin="0,0,24,0"/>
+            <TextBlock x:Name="PageTitleCultureNameTextBlock"
+                       Grid.Column="1"
+                       Style="{StaticResource TitleTextBlockStyle}" 
+                       VerticalAlignment="Bottom"
+                       Margin="0,0,0,4"
+                       FontSize="10"
+                       Text="{x:Bind PageTitleCultureName}"/>
+        </Grid>
+
+        <ScrollViewer x:Name="AppBarButtonScrollViewer"
+                      Grid.Row="1">
+            <StackPanel x:Name="AppBarButtonStackPanel"
+                        Orientation="Horizontal">
+                <AppBarButton x:Name="BackAppBarButton"
+                              Label="Back"
+                              ToolTipService.ToolTip="Go back"
+                              Icon="Back"
+                              Tapped="BackAppBarButton_Tapped"/>
+                <AppBarButton x:Name="HomeAppBarButton"
+                              Label="Home"
+                              ToolTipService.ToolTip="Go to Home page"
+                              Icon="Home"
+                              Tapped="HomeAppBarButton_Tapped"/>
+                <AppBarButton x:Name="SaveAppBarButton"
+                              Tapped="SaveAppBarButton_Tapped"
+                              Label="Save"
+                              ToolTipService.ToolTip="Save invoice"
+                              Icon="Save"
+                              IsEnabled="False"/>
+                <AppBarButton x:Name="ShowPrintHeaderPaneAppBarButton"
+                              Tapped="ShowPrintHeaderPaneAppBarButton_Tapped"
+                              Label="Show print header"
+                              ToolTipService.ToolTip="Show print header"
+                              Visibility="Visible"
+                              Icon="OpenPane"/>
+                <AppBarButton x:Name="HidePrintHeaderPaneAppBarButton"
+                              Tapped="HidePrintHeaderPaneAppBarButton_Tapped"
+                              Label="Hide print header"
+                              Visibility="Collapsed"
+                              ToolTipService.ToolTip="Hide print header"
+                              Icon="ClosePane"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--page content goes here-->
+        <ScrollViewer x:Name="PageContentScrollViewer"
+                      Grid.Row="2">
+
+            <StackPanel x:Name="MainStackPanel" 
+                        DataContext="{x:Bind InvoiceViewModel}"
+                        Margin="0,4,4,4">
+
+                <StackPanel.Resources>
+                    <local:CurrentCultureConverter x:Key="AllPurposeConverter" />
+                </StackPanel.Resources>
+
+                <StackPanel x:Name="InvoiceStackPanel">
+
+                    <StackPanel x:Name="HiddenPrintHeaderStackPanel"
+                                Visibility="Collapsed"
+                                Margin="0,0,4,0">
+
+                        <Grid x:Name="HiddenHeaderGrid"
+                              Background="{ThemeResource SystemBaseLowColor}">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Row="0"
+                                        Grid.Column="0"
+                                        Margin="0,0,0,24">
+
+                                <Image x:Name="SellerLogotypeImage"
+                                       Visibility="Collapsed"
+                                       MaxWidth="400" 
+                                       HorizontalAlignment="Left"
+                                       Source="/Assets/PlaceholderLogotype.png"
+                                       Stretch="None"
+                                       Margin="0,0,4,0"/>
+
+                                <TextBlock x:Name="SellerNameSubTitleTextBlock" 
+                                           Grid.Row="0"
+                                           Grid.Column="0"
+                                           Text="{Binding Path=SellerName, Mode=OneWay}"
+                                           TextWrapping="Wrap"
+                                           Style="{StaticResource TitleTextBlockStyle}"
+                                           Margin="0,0,4,0"/>
+                            </StackPanel>
+
+                            <TextBlock x:Name="TranslateInvoiceTextBlock"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="Invoice"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Top"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource TitleTextBlockStyle}"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="BuyerNameSubTitleTextBlock"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="{Binding Path=BuyerName, Mode=OneWay}"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource TitleTextBlockStyle}"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="TranslateInvoiceNumberTextBlock"
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       TextWrapping="Wrap"
+                                       Text="Invoice number"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="TranslateInvoiceDateTextBlock"
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       TextWrapping="Wrap"
+                                       Text="Invoice date"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="InvoiceNumberTextBlock"
+                                       Grid.Row="3"
+                                       Grid.Column="0"
+                                       Text="{Binding Path=InvoiceNumber, Mode=OneWay}"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource TitleTextBlockStyle}"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="1"
+                                       Text="{Binding Path=InvoiceDate, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:d\}}"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource TitleTextBlockStyle}"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="InvoiceInfoToBuyerTextBlock"
+                                       Grid.Row="4"
+                                       Grid.Column="0"
+                                       Text="{Binding Path=InvoiceInfoToBuyer, Mode=OneWay}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="TranslateDueDateTextBlock"
+                                       Grid.Row="5"
+                                       Grid.Column="0"
+                                       TextWrapping="Wrap"
+                                       Text="Due date"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="TranslateAmountToPayTextBlock" 
+                                       Grid.Row="5"
+                                       Grid.Column="1"
+                                       TextWrapping="Wrap"
+                                       Text="Amount to pay"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock Grid.Row="6"
+                                       Grid.Column="0"
+                                       Text="{Binding Path=NetPaymentDueDate, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:D\}}"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource TitleTextBlockStyle}"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock Grid.Row="6"
+                                       Grid.Column="1"
+                                       Text="{Binding Path=TotalIncludingTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Style="{StaticResource TitleTextBlockStyle}"
+                                       Margin="0,0,4,0"/>
+                        </Grid>
+
+                        <Grid x:Name="HiddenSellerAccountGrid"
+                              Background="{ThemeResource SystemBaseLowColor}">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock x:Name="TranslatePaymentToAccountTextBlock" 
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       Text="Payment to account"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="TranslateSWIFTBICTextBlock" 
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       Text="SWIFT/BIC"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="TranslateIBANTextBlock"
+                                       Grid.Row="0"
+                                       Grid.Column="2"
+                                       Text="IBAN"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="SellerAccountTextBlock"
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="{Binding Path=SellerAccount, Mode=OneWay}"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="SellerSWIFTBICTextBlock"
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding Path=SellerSWIFTBIC, Mode=OneWay}"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="SellerIBANTextBlock"
+                                       Grid.Row="1"
+                                       Grid.Column="2"
+                                       Text="{Binding Path=SellerIBAN, Mode=OneWay}"
+                                       FontWeight="Bold"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+                        </Grid>
+
+                        <Grid x:Name="HiddenHeaderMoneyGrid"
+                              Background="{ThemeResource SystemBaseLowColor}"
+                              Margin="0,0,0,8">
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock x:Name="TranslateTotalIncludingTaxTextBlock" 
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       TextWrapping="Wrap"
+                                       Text="Total including tax"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="TranslateTotalExcludingTaxTextBlock"
+                                       Grid.Row="0"
+                                       Grid.Column="1"
+                                       TextWrapping="Wrap"
+                                       Text="Total excluding tax"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="TranslateTotalTaxTextBlock"
+                                       Grid.Row="0"
+                                       Grid.Column="2"
+                                       TextWrapping="Wrap"
+                                       Text="Total tax"
+                                       Margin="0,0,4,0"/>
+
+                            <TextBlock x:Name="TotalIncludingTaxTextBlock" 
+                                       Grid.Row="1"
+                                       Grid.Column="0"
+                                       Text="{Binding Path=TotalIncludingTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="TotalExcludingTaxTextBlock" 
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       Text="{Binding Path=TotalExcludingTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+                            <TextBlock x:Name="TotalTaxTextBlock" 
+                                       Grid.Row="1"
+                                       Grid.Column="2"
+                                       Text="{Binding Path=TotalTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,4,0"/>
+                        </Grid>
+
+                    </StackPanel>
+
+                    <Border x:Name="InvoiceHeaderBorder" 
+                           BorderBrush="{ThemeResource SystemBaseLowColor}"
+                           BorderThickness="0,4,0,4"
+                           Background="{ThemeResource SystemBaseLowColor}"
+                           ToolTipService.ToolTip="Hide invoice header"
+                           Margin="0,8,4,0"
+                           Tapped="InvoiceHeaderBorder_Tapped">
+                        <TextBlock x:Name="InvoiceHeaderBorderTextBlock" 
+                                   Text="Hide invoice header"
+                                   FontSize="10"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"/>
+                    </Border>
+
+                    <Grid x:Name="InvoiceHeaderGrid"
+                          Visibility="Visible">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="InvoiceNumberTextBox" 
+                                 Grid.Row="0"
+                                 Grid.Column="0"
+                                 PlaceholderText="Enter invoice number"
+                                 Text="{Binding Path=InvoiceNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Invoice number"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <CalendarDatePicker x:Name="InvoiceDateCalendarDatePicker"
+                                            Background="{ThemeResource SystemBaseLowColor}"
+                                            Grid.Row="0"
+                                            Grid.Column="1"
+                                            PlaceholderText="Select invoice date"
+                                            HorizontalAlignment="Stretch"
+                                            Header="Invoice date"
+                                            Margin="0,0,4,0"
+                                            DateChanged="InvoiceDateCalendarDatePicker_DateChanged"/>
+                        <TextBox x:Name="TranslateTotalIncludingTaxTextBox" 
+                                 Grid.Row="0"
+                                 Grid.Column="2"
+                                 Text="{Binding Path=TotalIncludingTax, Mode=OneWay, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                 IsReadOnly="True"
+                                 Header="Total including tax"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 IsHitTestVisible="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox x:Name="TranslateTotalExcludingTaxTextBox"
+                                 Grid.Row="0"
+                                 Grid.Column="3"
+                                 Text="{Binding Path=TotalExcludingTax, Mode=OneWay, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                 IsReadOnly="True"
+                                 Header="Total excluding tax"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 IsHitTestVisible="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox x:Name="TranslateTotalTaxTextBox"
+                                 Grid.Row="0"
+                                 Grid.Column="4"
+                                 Text="{Binding Path=TotalTax, Mode=OneWay, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                 IsReadOnly="True"
+                                 Header="Total tax"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 IsHitTestVisible="False"
+                                 Margin="0,0,4,0"/>
+                        <ComboBox x:Name="NetPaymentTermDaysComboBox"
+                                  Background="{ThemeResource SystemBaseLowColor}"
+                                  Grid.Row="1"
+                                  Grid.Column="0"
+                                  Header="Net payment term days"
+                                  HorizontalAlignment="Stretch"
+                                  SelectionChanged="NetPaymentTermDaysComboBox_SelectionChanged"
+                                  Margin="0,0,4,0"/>
+                        <TextBox x:Name="NetPaymentDueDateTextBox"
+                                 Grid.Row="1"
+                                 Grid.Column="1"
+                                 Grid.ColumnSpan="2"
+                                 PlaceholderText="Due date"
+                                 Text="{Binding Path=NetPaymentDueDate, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:D\}}"
+                                 Header="Due date"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 IsHitTestVisible="False"
+                                 IsReadOnly="True"
+                                 Margin="0,0,4,0"/>
+                    </Grid>
+
+                    <Border x:Name="BuyerBorder" 
+                           BorderBrush="{ThemeResource SystemBaseLowColor}"
+                           BorderThickness="0,4,0,4"
+                           Background="{ThemeResource SystemBaseLowColor}"
+                           ToolTipService.ToolTip="Hide buyer"
+                           Margin="0,8,4,0"
+                           Tapped="BuyerBorder_Tapped">
+                        <TextBlock x:Name="BuyerBorderTextBlock" 
+                                   Text="Hide buyer"
+                                   FontSize="10"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"/>
+                    </Border>
+
+                    <Grid x:Name="BuyerGrid"
+                          Visibility="Visible">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid x:Name="ChooseBuyerStackPanel"
+                              Grid.Row="0"
+                              Grid.Column="0"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Bottom">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox x:Name="ChooseBuyerComboBox"
+                                      Background="{ThemeResource SystemBaseLowColor}"
+                                      ItemsSource="{x:Bind BuyerViewModels}"
+                                      Grid.Column="0"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Bottom"
+                                      Margin="0,0,4,0"
+                                      ToolTipService.ToolTip="Choose a buyer"
+                                      SelectionChanged="ChooseBuyerComboBox_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Background="{ThemeResource SystemBaseLowColor}">
+                                            <TextBlock Text="{Binding Path=BuyerName, Mode=OneWay}"
+                                                       MaxWidth="600"
+                                                       TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                            <Button x:Name="CancelBuyerDataButton"
+                                    Background="{ThemeResource SystemBaseLowColor}"
+                                    Grid.Column="1"
+                                    Content="X"
+                                    HorizontalAlignment="Right"
+                                    ToolTipService.ToolTip="Empty all buyer's fields"
+                                    Tapped="CancelBuyerDataButton_Tapped"
+                                    Margin="0,0,4,0"/>
+                        </Grid>
+
+                        <Grid x:Name="SearchBuyerStackPanel"
+                              Grid.Row="0"
+                              Grid.Column="1"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Bottom"
+                              Margin="0,0,4,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="SearchBuyerTextBox"
+                                     Grid.Column="0"
+                                     Header="Search buyers:"
+                                     PlaceholderText="Enter text to search buyers"
+                                     InputScope="SearchIncremental"
+                                     TextChanged="SearchBuyerTextChanged"
+                                     Margin="0,0,4,0"
+                                     TextWrapping="Wrap"
+                                     IsSpellCheckEnabled="False"/>
+
+                            <Button x:Name="CancelSearchBuyerButton"
+                                    Background="{ThemeResource SystemBaseLowColor}"
+                                    Grid.Column="1"
+                                    Content="X"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    ToolTipService.ToolTip="Cancel search buyers"
+                                    Tapped="CancelSearchBuyerButton_Tapped"/>
+                        </Grid>
+
+                        <TextBox x:Name="BuyerNameTextBox" 
+                                 Grid.Row="1"
+                                 Grid.Column="0"
+                                 PlaceholderText="Enter buyer's name"
+                                 Text="{Binding Path=BuyerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="BuyerNameTextBox_TextChanged"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Header="Buyer's name"
+                                 Margin="0,0,4,0"/>
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="1"
+                                 PlaceholderText="Enter buyer's e-mail address"
+                                 Text="{Binding Path=BuyerEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Buyer's e-mail address"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="0"
+                                 PlaceholderText="Enter buyer's address"
+                                 Text="{Binding Path=BuyerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Buyer's address"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="1"
+                                 PlaceholderText="Enter buyer's phonenumber"
+                                 Text="{Binding Path=BuyerPhonenumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Buyer's phonenumber"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                    </Grid>
+
+                    <Border x:Name="SellerBorder" 
+                           BorderBrush="{ThemeResource SystemBaseLowColor}"
+                           BorderThickness="0,4,0,4"
+                           Background="{ThemeResource SystemBaseLowColor}"
+                           ToolTipService.ToolTip="Hide seller"
+                           Margin="0,8,4,0"
+                           Tapped="SellerBorder_Tapped">
+                        <TextBlock x:Name="SellerBorderTextBlock"  
+                                   Text="Hide seller"
+                                   FontSize="10"
+                                   Style="{ThemeResource CaptionTextBlockStyle}"/>
+                    </Border>
+
+                    <Grid x:Name="SellerGrid"
+                          Visibility="Visible">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid x:Name="ChooseSellerStackPanel"
+                              Grid.Row="0"
+                              Grid.Column="0"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Bottom">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <ComboBox x:Name="ChooseSellerComboBox"
+                                      Background="{ThemeResource SystemBaseLowColor}"
+                                      ItemsSource="{x:Bind SellerViewModels}"
+                                      Grid.Column="0"
+                                      HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Bottom"
+                                      Margin="0,0,4,0"
+                                      ToolTipService.ToolTip="Choose a seller"
+                                      SelectionChanged="ChooseSellerComboBox_SelectionChanged">
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Background="{ThemeResource SystemBaseLowColor}">
+                                            <TextBlock Text="{Binding Path=SellerName, Mode=OneWay}"
+                                                       MaxWidth="600"
+                                                       TextWrapping="Wrap"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+                            </ComboBox>
+
+                            <Button x:Name="CancelSellerDataButton"
+                                    Background="{ThemeResource SystemBaseLowColor}"
+                                    Grid.Column="1"
+                                    Content="X"
+                                    HorizontalAlignment="Right"
+                                    ToolTipService.ToolTip="Empty all seller's fields"
+                                    Tapped="CancelSellerDataButton_Tapped"
+                                    Margin="0,0,4,0"/>
+                        </Grid>
+
+                        <Grid x:Name="SearchSellerStackPanel"
+                              Grid.Row="0"
+                              Grid.Column="1"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Bottom"
+                              Margin="0,0,4,0">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox x:Name="SearchSellerTextBox"
+                                     Grid.Column="0"
+                                     Header="Search sellers:"
+                                     PlaceholderText="Enter text to search sellers"
+                                     InputScope="SearchIncremental"
+                                     TextChanged="SearchSellerTextChanged"
+                                     Margin="0,0,4,0"
+                                     TextWrapping="Wrap"
+                                     IsSpellCheckEnabled="False"/>
+
+                            <Button x:Name="CancelSearchSellerButton"
+                                    Background="{ThemeResource SystemBaseLowColor}"
+                                    Grid.Column="1"
+                                    Content="X"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Bottom"
+                                    ToolTipService.ToolTip="Cancel search sellers"
+                                    Tapped="CancelSearchSellerButton_Tapped"/>
+                        </Grid>
+
+                        <TextBox x:Name="SellerNameTextBox"
+                                 Grid.Row="1"
+                                 Grid.Column="0"
+                                 PlaceholderText="Enter seller's name"
+                                 Text="{Binding Path=SellerName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 TextChanged="SellerNameTextBox_TextChanged"
+                                 Header="Seller's name"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox Grid.Row="1"
+                                 Grid.Column="1"
+                                 PlaceholderText="Enter seller's e-mail address"
+                                 Text="{Binding Path=SellerEmail, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Seller's e-mail address"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="0"
+                                 PlaceholderText="Enter seller's address"
+                                 Text="{Binding Path=SellerAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Seller's address"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox Grid.Row="2"
+                                 Grid.Column="1"
+                                 PlaceholderText="Enter seller's phonenumber"
+                                 Text="{Binding Path=SellerPhonenumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Seller's phonenumber"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox x:Name="SellerAccountTextBox" 
+                                 Grid.Row="3"
+                                 Grid.Column="0"
+                                 Grid.ColumnSpan="2"
+                                 PlaceholderText="Enter seller's account"
+                                 Text="{Binding Path=SellerAccount, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Seller's account"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                        <TextBox x:Name="SellerSWIFTBICTextBox" 
+                                 Grid.Row="4"
+                                 Grid.Column="0"
+                                 Margin="0,0,4,0"
+                                 PlaceholderText="Enter seller's SWIFT/BIC"
+                                 Text="{Binding Path=SellerSWIFTBIC, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Seller's SWIFT/BIC"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"/>
+                        <TextBox x:Name="SellerIBANTextBox" 
+                                 Grid.Row="4"
+                                 Grid.Column="1"
+                                 PlaceholderText="Enter seller's IBAN"
+                                 Text="{Binding Path=SellerIBAN, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                 Header="Seller's IBAN"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+                    </Grid>
+
+                </StackPanel>
+                
+                <Border x:Name="NewItemBorder" 
+                       BorderBrush="{ThemeResource SystemBaseLowColor}"
+                       BorderThickness="0,4,0,4"
+                       Background="{ThemeResource SystemBaseLowColor}"
+                       ToolTipService.ToolTip="Hide new item"
+                       Margin="0,8,4,0"
+                       Tapped="NewItemBorder_Tapped">
+                    <TextBlock x:Name="NewItemBorderTextBlock" 
+                               Text="Hide new item"
+                               FontSize="10"
+                               Style="{ThemeResource CaptionTextBlockStyle}"/>
+                </Border>
+
+                <StackPanel x:Name="NewItemStackpanel"
+                            Visibility="Visible">
+
+                    <Grid x:Name="NewItemGrid"
+                          DataContext="{x:Bind NewItemViewModel}"
+                          VerticalAlignment="Bottom">
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox x:Name="NewItemNameTextBox"
+                                 VerticalAlignment="Bottom"
+                                 Grid.Column="0"
+                                 PlaceholderText="Enter name"
+                                 ToolTipService.ToolTip="Enter name"
+                                 Text="{Binding Path=Name, Mode=TwoWay}"
+                                 Header="Name"
+                                 TextWrapping="Wrap"
+                                 IsSpellCheckEnabled="False"
+                                 Margin="0,0,4,0"/>
+
+                        <TextBox x:Name="TaxTextBox" 
+                                 Grid.Column="1"
+                                 Header="Tax %"
+                                 Text="{Binding Path=BigTax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:n\2\}}"
+                                 PlaceholderText="Enter tax %"
+                                 ToolTipService.ToolTip="Enter tax %"
+                                 Margin="0,0,4,0"
+                                 VerticalAlignment="Bottom"
+                                 TextChanged="TaxTextBox_TextChanged"/>
+
+                        <TextBox x:Name="PriceTextBox"
+                                 Grid.Column="2"
+                                 Header="Price"
+                                 Text="{Binding Path=Price, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:n\2\}}"
+                                 PlaceholderText="Enter price"
+                                 ToolTipService.ToolTip="Enter price"
+                                 Margin="0,0,4,0"
+                                 VerticalAlignment="Bottom"
+                                 TextChanged="PriceTextBox_TextChanged"/>
+
+                        <Button x:Name="AddItemToItemsButton"
+                                Grid.Column="3"
+                                VerticalAlignment="Bottom"
+                                Background="{ThemeResource SystemBaseLowColor}"
+                                Content="+"
+                                FontWeight="ExtraBold"
+                                HorizontalAlignment="Right"
+                                ToolTipService.ToolTip="Add item to invoice items and items"
+                                Tapped="AddItemToItemsButton_Tapped"
+                                Margin="0,0,4,0"/>
+
+                        <Button x:Name="RemoveItemFromItemsButton"
+                                VerticalAlignment="Bottom"
+                                Grid.Column="4"
+                                Background="{ThemeResource SystemBaseLowColor}"
+                                Content="-"
+                                FontWeight="ExtraBold"
+                                HorizontalAlignment="Right"
+                                ToolTipService.ToolTip="Remove item from items"
+                                Tapped="RemoveItemFromItemsButton_Tapped"
+                                Margin="0,0,12,0"/>
+                    </Grid>
+                </StackPanel>
+
+                <Border x:Name="InvoiceItemsBorder" 
+                       BorderBrush="{ThemeResource SystemBaseLowColor}"
+                       BorderThickness="0,4,0,4"
+                       Background="{ThemeResource SystemBaseLowColor}"
+                       ToolTipService.ToolTip="Hide invoice items"
+                       Margin="0,8,4,0"
+                       Tapped="InvoiceItemsBorder_Tapped">
+                    <TextBlock x:Name="InvoiceItemsBorderTextBlock" 
+                               Text="Hide invoice items"
+                               FontSize="10"
+                               Style="{ThemeResource CaptionTextBlockStyle}"/>
+                </Border>
+
+                <ListView x:Name="InvoiceItemListView"
+                          Visibility="Visible"
+                          SelectionMode="Single"
+                          Margin="0,4,4,4"
+                          Tapped="InvoiceItemListView_Tapped">
+
+                    <ListView.HeaderTemplate>
+                        <DataTemplate x:Name="InvoiceItemListViewDataTemplate" x:DataType="viewmodels:NakedHeaderInvoiceItemViewModel">
+                            <Grid x:Name="InvoiceItemListViewDataGrid" Padding="12" Background="{ThemeResource SystemBaseLowColor}" AutomationProperties.Name="NakedHeaderInvoiceItemListView">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Bottom"
+                                           TextAlignment="Left"
+                                           TextWrapping="Wrap"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="0" 
+                                           Text="{x:Bind HeaderName}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Bottom"
+                                           TextAlignment="Right"
+                                           Margin="0,0,24,0"
+                                           Grid.Column="1" 
+                                           Text="{x:Bind HeaderQuantity}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Bottom"
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="2" 
+                                           Text="{x:Bind HeaderTax}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Bottom"
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="3" 
+                                           Text="{x:Bind HeaderPrice}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock Grid.Column="4"
+                                           Width="24"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Bottom"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.HeaderTemplate>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:Name="TableInvoiceItemDataTemplate" x:DataType="viewmodels:InvoiceItemViewModel">
+                            <Grid x:Name="TableInvoiceItemDataGrid" Height="Auto" AutomationProperties.Name="{x:Bind InvoiceItemViewModelId}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                           TextAlignment="Left"
+                                           Margin="0,0,4,0"
+                                           Text="{x:Bind Path=Name}"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Bottom"/>
+
+                                <TextBox x:Name="QuantityTextBox" 
+                                         Grid.Column="1"
+                                         TextAlignment="Right"
+                                         Text="{Binding Path=Quantity, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:n\2\}}"
+                                         ToolTipService.ToolTip="Enter quantity"
+                                         Margin="0,0,24,0"
+                                         VerticalAlignment="Bottom"
+                                         TextChanged="QuantityTextBox_TextChanged"
+                                         Tag="{x:Bind InvoiceItemViewModelId}"/>
+
+                                <TextBlock Grid.Column="2"
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           Text="{Binding Path=Tax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:p\2\}}"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Bottom"/>
+
+                                <TextBlock Grid.Column="3" 
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           Text="{Binding Path=Price, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Bottom"/>
+
+                                <Button x:Name="RemoveInvoiceItemButton"
+                                        Background="{ThemeResource SystemBaseLowColor}"
+                                        Grid.Column="4"
+                                        Content="-"
+                                        FontWeight="ExtraBold"
+                                        Tag="{x:Bind InvoiceItemViewModelId}"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        ToolTipService.ToolTip="Remove item from invoice items"
+                                        Tapped="RemoveInvoiceItemButton_Tapped"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+
+                <Border x:Name="ItemsBorder" 
+                       BorderBrush="{ThemeResource SystemBaseLowColor}"
+                       BorderThickness="0,4,0,4"
+                       Background="{ThemeResource SystemBaseLowColor}"
+                       ToolTipService.ToolTip="Hide items"
+                       Margin="0,8,4,0"
+                       Tapped="ItemsBorder_Tapped">
+                    <TextBlock x:Name="ItemsBorderTextBlock" 
+                               Text="Hide items"
+                               FontSize="10"
+                               Style="{ThemeResource CaptionTextBlockStyle}"/>
+                </Border>
+
+                <Grid x:Name="SearchItemStackPanel"
+                      Grid.Row="0"
+                      Visibility="Visible"
+                      HorizontalAlignment="Stretch"
+                      Margin="0,0,4,0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="SearchItemTextBox"
+                             Grid.Column="0"
+                             Header="Search items:"
+                             PlaceholderText="Enter text to search items"
+                             InputScope="SearchIncremental"
+                             TextChanged="SearchItemTextChanged"
+                             Margin="0,0,4,0"
+                             TextWrapping="Wrap"
+                             IsSpellCheckEnabled="False"/>
+
+                    <Button x:Name="CancelSearchItemButton"
+                            Background="{ThemeResource SystemBaseLowColor}"
+                            Grid.Column="1"
+                            Content="X"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            ToolTipService.ToolTip="Cancel search items"
+                            Tapped="CancelSearchItemButton_Tapped"/>
+                </Grid>
+                
+                <ListView x:Name="ItemListView"
+                          ItemsSource="{x:Bind ItemViewModels}"
+                          Visibility="Visible"
+                          SelectionMode="Single"
+                          Margin="0,4,4,4"
+                          DoubleTapped="ItemListView_DoubleTapped"
+                          Tapped="ItemListView_Tapped">
+
+                    <ListView.HeaderTemplate>
+                        <DataTemplate x:Name="ItemListViewDataTemplate" x:DataType="viewmodels:NakedHeaderItemViewModel">
+                            <Grid x:Name="ItemListViewDataGrid" Padding="12" Background="{ThemeResource SystemBaseLowColor}" AutomationProperties.Name="NakedHeaderItemListView">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock VerticalAlignment="Bottom"
+                                           TextAlignment="Left"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="0" 
+                                           Text="{x:Bind HeaderName}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Bottom"
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="1" 
+                                           Text="{x:Bind HeaderTax}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock VerticalAlignment="Bottom"
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           Grid.Column="2" 
+                                           Text="{x:Bind HeaderPrice}" 
+                                           Style="{ThemeResource CaptionTextBlockStyle}"/>
+                                <TextBlock Grid.Column="3"
+                                           Width="28"
+                                           HorizontalAlignment="Right"
+                                           VerticalAlignment="Bottom"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.HeaderTemplate>
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:Name="TableItemDataTemplate" x:DataType="viewmodels:ItemViewModel">
+                            <Grid x:Name="TableItemDataGrid" Height="Auto" AutomationProperties.Name="{x:Bind ItemViewModelId}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="6*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" 
+                                           VerticalAlignment="Bottom"
+                                           TextAlignment="Left"
+                                           Margin="0,0,4,0"
+                                           Text="{x:Bind Path=Name}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Grid.Column="1"
+                                           TextAlignment="Right"
+                                           VerticalAlignment="Bottom"
+                                           Margin="0,0,4,0"
+                                           Text="{Binding Path=Tax, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:p\2\}}"/>
+                                <TextBlock Grid.Column="2" 
+                                           VerticalAlignment="Bottom"
+                                           TextAlignment="Right"
+                                           Margin="0,0,4,0"
+                                           Text="{Binding Path=Price, Converter={StaticResource AllPurposeConverter}, ConverterParameter=\{0:c\}}"/>
+                                <Button x:Name="AddItemToInvoiceItemsButton"
+                                        Background="{ThemeResource SystemBaseLowColor}"
+                                        Grid.Column="3"
+                                        Content="+"
+                                        FontWeight="ExtraBold"
+                                        Tag="{x:Bind ItemViewModelId}"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Bottom"
+                                        ToolTipService.ToolTip="Add item to invoice items"
+                                        Tapped="AddItemToInvoiceItemsButton_Tapped"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="VerticalContentAlignment" Value="Center" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                </ListView>
+
+
+            </StackPanel>
+        </ScrollViewer>
+        <!--page content goes here-->
+
+    </Grid>
+</Page>

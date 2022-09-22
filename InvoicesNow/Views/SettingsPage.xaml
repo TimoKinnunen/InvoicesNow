@@ -1,0 +1,111 @@
+﻿<Page
+    x:Class="InvoicesNow.Views.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="0,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="0,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="12,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="24,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="24,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="PageTitleTextBlock" 
+                   Grid.Row="0" 
+                   Style="{StaticResource TitleTextBlockStyle}" 
+                   Text="Settings"/>
+
+        <ScrollViewer x:Name="AppBarButtonScrollViewer"
+                      Grid.Row="1">
+            <StackPanel x:Name="AppBarButtonStackPanel"
+                        Orientation="Horizontal">
+                <AppBarButton x:Name="HomeAppBarButton"
+                              Tapped="HomeAppBarButton_Tapped"
+                              Label="Home"
+                              ToolTipService.ToolTip="Go to Home page"
+                              Icon="Home"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer x:Name="PageContentScrollViewer"
+                      Grid.Row="2">
+
+            <StackPanel x:Name="PageContentStackPanel">
+
+                <!--page content goes here-->
+
+                <TextBlock x:Name="StateForInvoiceNumbersTextBlock" 
+                           TextWrapping="Wrap"
+                           Text="Your invoice numbers use date for now."
+                           Margin="0,24,0,0"/>
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}"
+                           Margin="0,24,0,0"
+                           Text="Serie"/>
+                <TextBlock TextWrapping="Wrap"
+                           Text="Change your invoice numbers here to a serie."/>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="SerieInvoiceNumberButton"
+                            Grid.Column="0"
+                            VerticalAlignment="Bottom"
+                            Content="Set serie invoice numbers"
+                            Tapped="SerieInvoiceNumberButton_Tapped"
+                            Margin="0,4,24,4"/>
+
+                    <TextBox x:Name="SerieTextBox"
+                             Header="Serie starts with:"
+                             Grid.Column="1"
+                             VerticalAlignment="Bottom"
+                             Text="30000"
+                             Margin="0,4,4,4"/>
+                </Grid>
+
+                <TextBlock Style="{StaticResource SubtitleTextBlockStyle}" 
+                           Text="Date"
+                           Margin="0,24,0,0"/>
+                <TextBlock TextWrapping="Wrap"
+                           Text="Change your invoice numbers here calculated from invoice date."/>
+
+                <Button x:Name="DateInvoiceNumberButton"
+                        Content="Set date invoice numbers"
+                        Tapped="DateInvoiceNumberButton_Tapped"
+                        Margin="0,4,0,4"/>
+
+                <!--page content goes here-->
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

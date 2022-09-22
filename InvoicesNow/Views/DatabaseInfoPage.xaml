@@ -1,0 +1,96 @@
+﻿<Page
+    x:Class="InvoicesNow.Views.DatabaseInfoPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Grid>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState x:Name="Narrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}"/>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="0,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="0,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="0,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="Wide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PageTitleTextBlock.Margin" Value="12,0,0,0"/>
+                        <Setter Target="PageContentScrollViewer.Margin" Value="24,0,0,0"/>
+                        <Setter Target="AppBarButtonScrollViewer.Margin" Value="24,0,0,0"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock x:Name="PageTitleTextBlock" 
+                   Grid.Row="0" 
+                   Style="{StaticResource TitleTextBlockStyle}" 
+                   Text="Database info"/>
+
+        <ScrollViewer x:Name="AppBarButtonScrollViewer"
+                      Grid.Row="1">
+            <StackPanel x:Name="AppBarButtonStackPanel"
+                        Orientation="Horizontal">
+                <AppBarButton x:Name="HomeAppBarButton"
+                              Tapped="HomeAppBarButton_Tapped"
+                              Label="Home"
+                              ToolTipService.ToolTip="Go to Home page"
+                              Icon="Home"/>
+            </StackPanel>
+        </ScrollViewer>
+
+        <ScrollViewer x:Name="PageContentScrollViewer"
+                      Grid.Row="2">
+            <StackPanel x:Name="PageContentStackPanel">
+
+                <!--page content goes here-->
+                <Grid x:Name="VersionGrid">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="...\LocalState\InvoicesNow.db" 
+                               Grid.Row="0"
+                               Margin="0,4,0,4" 
+                               Style="{StaticResource SubtitleTextBlockStyle}"/>
+                    <TextBlock x:Name="InvoicesNowFilePath"
+                               Grid.Row="1"
+                               Margin="0,4,0,4"
+                               TextWrapping="Wrap"
+                               IsTextSelectionEnabled="True"/>
+                    <TextBlock x:Name="InvoicesNowFileSize"
+                               Grid.Row="2"
+                               Margin="0,4,0,4"
+                               TextWrapping="Wrap"/>
+                    <TextBlock Text="Microsoft SQLite 3.1.0" 
+                               Grid.Row="3"
+                               Margin="0,4,0,0"
+                               Style="{StaticResource SubtitleTextBlockStyle}"
+                               TextWrapping="Wrap"/>
+
+                </Grid>
+                <!--page content goes here-->
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
